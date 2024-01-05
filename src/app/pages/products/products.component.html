@@ -1,0 +1,104 @@
+<div class="col-9">
+  <h1 class="text-center text-danger fw-bold pb-3 bg-warning sticky-top mb-0">
+    SHOP
+  </h1>
+  <div class="row g-3">
+    <div class="col-3" *ngFor="let item of products">
+      <div class="card text-center p-0">
+        <div class="card-header">
+          <h5>{{ item.name }}</h5>
+        </div>
+        <div class="card-body">
+          <img src="/assets/menu/{{ item.image }}" width="100%" alt="" />
+          <h4 class="text-danger mt-3 mb-0">
+            {{ item.price.toLocaleString() }}đ | còn: {{ item.stock }}
+          </h4>
+        </div>
+        <button
+          class="btn btn-danger fw-bold"
+          [disabled]="isOutOfStock(item)"
+          (click)="addToCart(item)"
+        >
+          ADD TO CART
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-3 px-0 cart">
+  <h1 class="text-center text-white fw-bold pb-3 cart-title mb-0">CART</h1>
+  <table class="table text-center table-hover">
+    <thead>
+      <tr class="table-warning">
+        <th>Name</th>
+        <th>Quantity</th>
+        <th>Sum</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of carts">
+        <td class="text-start ps-3">{{ item.name }}</td>
+        <td>
+          <button
+            class="btn btn-outline-danger rounded-circle"
+            (click)="decreaseQuantity(item)"
+          >
+            -
+          </button>
+          <span class="mx-4">{{ item.quantity.toLocaleString() }}</span>
+          <button
+            class="btn btn-outline-danger rounded-circle"
+            [disabled]="isOutOfStock(item)"
+            (click)="increaseQuantity(item)"
+          >
+            +
+          </button>
+        </td>
+        <td>{{ (item.quantity * item.price).toLocaleString() }}đ</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="col-3 px-3 pb-4 total">
+    <div class="row fs-1 mb-3">
+      <span class="col-5">Total:</span>
+      <span class="col-7"> {{ getTotal() }}đ </span>
+    </div>
+    <div class="d-flex justify-content-around">
+      <button class="btn btn-danger btn-lg">Cancel</button>
+      <button class="btn btn-primary btn-lg" (click)="onConfirm()">
+        Confirm
+      </button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="showInvoice" class="invoice">
+  <h2 class="fw-bold mb-4">Hóa đơn</h2>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Quantity</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of carts">
+        <td>{{ item.name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.price | currency }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class=" mt-5 me-3">
+    <p class="fw-bold text-end">Total: {{ getTotal() }} đ</p>
+    <div class="text-end">
+      <button class="btn btn-primary" (click)="invoice()">Thanh toán</button>
+      <button class="btn btn-secondary" (click)="closeInvoice()">Cancel</button>
+    </div>
+  </div>
+  
+</div>
